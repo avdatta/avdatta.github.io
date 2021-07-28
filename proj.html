@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+          
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v6.js"></script>
+
+<div class="text-center">
+  <button onclick="update('2015.csv')">2015</button>
+  <button onclick="update('2016.csv')">2016</button>
+  <button onclick="update('2017.csv')">2017</button>
+  <button onclick="update('2018.csv')">2018</button>
+  <button onclick="update('2019.csv')">2019</button>
+</div>
+<div id="scatter_plot"></div>
+
+<style>
+  .dot {
+    stroke-width: 1px;
+    stroke: white;
+  }
+  .dot:hover {
+    stroke: black;
+  }
+  .text-center {
+  text-align: center;
+}
+
+</style>
+
+<script>
+
+  const margin = {top: 50, right: 200, bottom: 300, left: 100},
+      width = 1500- margin.left - margin.right,
+      height = 900 - margin.top - margin.bottom;
+  
+  var svg = d3.select("#scatter_plot")
+    .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+  
+
+  var regions = ['Australia and New Zealand', 'Central and Eastern Europe', 'Eastern Asia', 'Latin America and Caribbean', 'Middle East and Northern Africa', 'North America', 'Southeastern Asia', 'Southern Asia', 'Sub-Saharan Africa', 'Western Europe']
+  var colorMap = d3.scaleOrdinal()
+      .domain(regions)
+      .range(d3.schemeCategory10);
+
+  // Outer function to read in csv files
+  function update(dataset) {
+    d3.csv(dataset).then( function(data) {
+    
+    d3.selectAll("g > *").remove()
+
+    // Add x and y axes
+    const x = d3.scaleLinear()
+      .domain([0, 2.3])
+      .range([ 0, width ]);
+    const y = d3.scaleLinear()
+      .domain([2, 9])
+      .range([ height, 0]);
+    // Add a scale for bubble size
+    const z = d3.scaleLinear()
+      .domain([0, 0.8])
+      .range([ 2, 40]);
+
+    // Add dots
+    svg.append('g')
+      .selectAll("dot")
+      .data(data)
+      .join("circle")
+      .attr("cx", d => x(d['GDP per Capita']))
+      .attr("cy", d => y(d['Happiness Score']))
+      .attr("r", 0)
+      .transition()
+      .duration(1000)
+      .attr("r", function (d) { return z(d['Freedom']); } )
+      .style("fill", "#69b3a2")
+      .style("opacity", "0.7")
+      .attr("stroke", "black")
+      .style("fill", d => colorMap(d.Region));
+          
+
+    svg.append("g")
+      .attr("transform", `translate(0, ${height})`)
+      .transition()
+      .duration(1000)
+      .call(d3.axisBottom(x));
+
+    svg.append("g")
+      .transition()
+      .duration(1000)
+      .call(d3.axisLeft(y));
+
+    svg.selectAll("mydots")
+    .data(regions)
+    .enter()
+    .append("circle")
+      .attr("cx", 1050)
+      .attr("cy", function(d,i){ return 300 + i*25}) // 100 is where the first dot appears. 25 is the distance between dots
+      .attr("r", 7)
+      .style("fill", function(d){ return colorMap(d)})
+
+  // Add one dot in the legend for each name.
+    svg.selectAll("mylabels")
+    .data(regions)
+    .enter()
+    .append("text")
+      .attr("x", 1070)
+      .attr("y", function(d,i){ return 300 + i*25}) // 100 is where the first dot appears. 25 is the distance between dots
+      .style("fill", function(d){ return colorMap(d)})
+      .text(function(d){ return d})
+      .attr("text-anchor", "left")
+      .style("alignment-baseline", "middle")
+
+    })
+  
+  }
+
+  
+  update("2019.csv")
+
+  </script>
+
+
+
+
+</script>
+  
+
+
+
