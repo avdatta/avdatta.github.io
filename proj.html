@@ -5,9 +5,6 @@
 <script src="https://d3js.org/d3.v6.js"></script>
 
 <div class="text-center">
-  <button onclick="update('2015.csv')">2015</button>
-  <button onclick="update('2016.csv')">2016</button>
-  <button onclick="update('2017.csv')">2017</button>
   <button onclick="update('2018.csv')">2018</button>
   <button onclick="update('2019.csv')">2019</button>
   <button onclick="update('2020.csv')">2020</button>
@@ -26,6 +23,16 @@
   }
   .text-center {
   text-align: center;
+  }
+
+  .grid line {
+    stroke: lightgrey;
+    stroke-opacity: 0.7;
+    shape-rendering: crispEdges;
+  }
+
+  .grid path {
+    stroke-width: 0;
   }
   div.tooltip {
     position: absolute;
@@ -48,6 +55,7 @@
   const margin = {top: 50, right: 200, bottom: 300, left: 100},
       width = 1500- margin.left - margin.right,
       height = 950 - margin.top - margin.bottom;
+      
   
   var svg = d3.select("#scatter_plot")
     .append("svg")
@@ -66,11 +74,22 @@
       .style("opacity", 0)
       .attr("class", "tooltip")
 
+   
+
   // Outer function to read in csv files
   function update(dataset) {
     d3.csv(dataset).then( function(data) {
+    function make_x_gridlines() {		
+        return d3.axisBottom(x)
+            .ticks(10)
+    }
+
+
+    function make_y_gridlines() {		
+        return d3.axisLeft(y)
+            .ticks(10)
+    }
     
-    console.log(data)
     d3.selectAll("g > *").remove()
 
     // Add x and y axes
@@ -85,7 +104,26 @@
       .domain([0, 0.8])
       .range([ 2, 40]);
     
-   
+     // add the X gridlines
+    svg.append("g")			
+      .attr("class", "grid")
+      .attr("transform", "translate(0," + height + ")")
+      .transition()
+      .duration(1000)
+      .call(make_x_gridlines()
+          .tickSize(-height)
+          .tickFormat("")
+      )
+
+  // add the Y gridlines
+    svg.append("g")			
+      .attr("class", "grid")
+      .transition()
+      .duration(1000)
+      .call(make_y_gridlines()
+          .tickSize(-width)
+          .tickFormat("")
+      )
     
     const mouseover = function(event, d) {
       tooltip
@@ -146,10 +184,10 @@
     .enter()
     .append("circle")
     .attr("cx", 1050)
-    .attr("cy", function(d,i){ return 300 + i*20}) 
+    .attr("cy", function(d,i){ return 410 + i*20}) 
     .attr("r", 0)
     .transition()
-    .duration(1000)
+    .duration(1050)
     .attr("r", 7)
     .style("fill", d => colorMap(d))
 
@@ -158,11 +196,13 @@
     .enter()
     .append("text")
     .attr("x", 1070)
-    .attr("y", function(d,i){ return 300 + i*20}) 
+    .attr("y", function(d,i){ return 410 + i*20}) 
     .style("fill", d => colorMap(d))
     .text(d => d)
     .attr("text-anchor", "left")
     .style("alignment-baseline", "middle")
+
+    
 
     })
   
