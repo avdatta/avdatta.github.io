@@ -79,129 +79,153 @@
   // Outer function to read in csv files
   function update(dataset) {
     d3.csv(dataset).then( function(data) {
-    function make_x_gridlines() {		
-        return d3.axisBottom(x)
-            .ticks(10)
-    }
+      function make_x_gridlines() {		
+          return d3.axisBottom(x)
+              .ticks(10)
+      }
 
 
-    function make_y_gridlines() {		
-        return d3.axisLeft(y)
-            .ticks(10)
-    }
-    
-    d3.selectAll("g > *").remove()
+      function make_y_gridlines() {		
+          return d3.axisLeft(y)
+              .ticks(10)
+      }
+      
+      d3.selectAll("g > *").remove()
 
-    // Add x and y axes
-    const x = d3.scaleLinear()
-      .domain([0, 2.3])
-      .range([ 0, width ]);
-    const y = d3.scaleLinear()
-      .domain([2, 9])
-      .range([ height, 0]);
-    // Add a scale for bubble size
-    const z = d3.scaleLinear()
-      .domain([0, 0.8])
-      .range([ 2, 40]);
-    
-     // add the X gridlines
-    svg.append("g")			
-      .attr("class", "grid")
-      .attr("transform", "translate(0," + height + ")")
-      .transition()
-      .duration(1000)
-      .call(make_x_gridlines()
-          .tickSize(-height)
-          .tickFormat("")
-      )
-
-  // add the Y gridlines
-    svg.append("g")			
-      .attr("class", "grid")
-      .transition()
-      .duration(1000)
-      .call(make_y_gridlines()
-          .tickSize(-width)
-          .tickFormat("")
-      )
-    
-    const mouseover = function(event, d) {
-      tooltip
-        .style("opacity", 1)
-    };
-
-    const mousemove = function(event, d) {
-      tooltip
-        .html(`Country: ${d['Country']}` + '<br/><br/>' + `Happiness Score: ${d['Happiness Score']}` + '<br/>' + 
-        `Explained by GDP per Capita: ${d['GDP per Capita']}` + `<br/>` + `Explained by Freedom & Civil Liberties: ${d['Freedom']}`)
-        .style("left", (event.pageX) + "px")
-        .style("top", (event.pageY - 28) + "px");
-    };
-
-    const mouseleave = function(event,d) {
-      tooltip
+      // Add x and y axes
+      const x = d3.scaleLinear()
+        .domain([0, 2.3])
+        .range([ 0, width ]);
+      const y = d3.scaleLinear()
+        .domain([2, 9])
+        .range([ height, 0]);
+      // Add a scale for bubble size
+      const z = d3.scaleLinear()
+        .domain([0, 0.8])
+        .range([ 2, 40]);
+      
+      // add the X gridlines
+      svg.append("g")			
+        .attr("class", "grid")
+        .attr("transform", "translate(0," + height + ")")
         .transition()
-        .duration(100)
-        .style("opacity", 0)
-    };
+        .duration(1000)
+        .call(make_x_gridlines()
+            .tickSize(-height)
+            .tickFormat("")
+        )
 
-    // Add dots
-    var dots = svg.append('g')
-      .selectAll("dot")
-      .data(data)
-      .join("circle")
-      .attr("cx", d => x(d['GDP per Capita']))
-      .attr("cy", d => y(d['Happiness Score']))
+    // add the Y gridlines
+      svg.append("g")			
+        .attr("class", "grid")
+        .transition()
+        .duration(1000)
+        .call(make_y_gridlines()
+            .tickSize(-width)
+            .tickFormat("")
+        )
+      
+      const mouseover = function(event, d) {
+        tooltip
+          .style("opacity", 1)
+      };
+
+      const mousemove = function(event, d) {
+        tooltip
+          .html(`Country: ${d['Country']}` + '<br/><br/>' + `Happiness Score: ${d['Happiness Score']}` + '<br/>' + 
+          `Explained by GDP per Capita: ${d['GDP per Capita']}` + `<br/>` + `Explained by Freedom & Civil Liberties: ${d['Freedom']}`)
+          .style("left", (event.pageX) + "px")
+          .style("top", (event.pageY - 28) + "px");
+      };
+
+      const mouseleave = function(event,d) {
+        tooltip
+          .transition()
+          .duration(100)
+          .style("opacity", 0)
+      };
+
+      // Add dots
+      var dots = svg.append('g')
+        .selectAll("dot")
+        .data(data)
+        .join("circle")
+        .attr("cx", d => x(d['GDP per Capita']))
+        .attr("cy", d => y(d['Happiness Score']))
+        .attr("r", 0)
+        .attr("class", "bubble")
+      
+      dots.transition()
+        .duration(1000)
+        .attr("r", d => z(d['Freedom']))
+        .style("fill", "#69b3a2")
+        .style("opacity", "0.7")
+        .attr("stroke", "black")
+        .style("fill", d => colorMap(d.Region))
+      
+      dots.on("mouseover", mouseover)
+        .on("mousemove", mousemove)
+        .on("mouseleave", mouseleave);
+            
+
+      svg.append("g")
+        .attr("transform", `translate(0, ${height})`)
+        .transition()
+        .duration(1000)
+        .call(d3.axisBottom(x));
+
+      svg.append("g")
+        .transition()
+        .duration(1000)
+        .call(d3.axisLeft(y));
+
+      svg.selectAll("legend_dots")
+      .data(regions)
+      .enter()
+      .append("circle")
+      .attr("cx", 1050)
+      .attr("cy", function(d,i){ return 410 + i*20}) 
       .attr("r", 0)
-      .attr("class", "bubble")
-    
-    dots.transition()
-      .duration(1000)
-      .attr("r", d => z(d['Freedom']))
-      .style("fill", "#69b3a2")
-      .style("opacity", "0.7")
-      .attr("stroke", "black")
-      .style("fill", d => colorMap(d.Region))
-    
-    dots.on("mouseover", mouseover)
-      .on("mousemove", mousemove)
-      .on("mouseleave", mouseleave);
-          
-
-    svg.append("g")
-      .attr("transform", `translate(0, ${height})`)
       .transition()
-      .duration(1000)
-      .call(d3.axisBottom(x));
+      .duration(1050)
+      .attr("r", 7)
+      .style("fill", d => colorMap(d))
 
-    svg.append("g")
-      .transition()
-      .duration(1000)
-      .call(d3.axisLeft(y));
+      svg.selectAll("legend_labels")
+      .data(regions)
+      .enter()
+      .append("text")
+      .attr("x", 1070)
+      .attr("y", function(d,i){ return 410 + i*20}) 
+      .style("fill", d => colorMap(d))
+      .text(d => d)
+      .attr("text-anchor", "left")
+      .style("alignment-baseline", "middle")
 
-    svg.selectAll("legend_dots")
-    .data(regions)
-    .enter()
-    .append("circle")
-    .attr("cx", 1050)
-    .attr("cy", function(d,i){ return 410 + i*20}) 
-    .attr("r", 0)
-    .transition()
-    .duration(1050)
-    .attr("r", 7)
-    .style("fill", d => colorMap(d))
+      // 2018 Annotations
+      if (dataset == "2018.csv") {
 
-    svg.selectAll("legend_labels")
-    .data(regions)
-    .enter()
-    .append("text")
-    .attr("x", 1070)
-    .attr("y", function(d,i){ return 410 + i*20}) 
-    .style("fill", d => colorMap(d))
-    .text(d => d)
-    .attr("text-anchor", "left")
-    .style("alignment-baseline", "middle")
+      }
 
+      // 2019 Annotations
+      else if (dataset == "2019.csv") {
+        
+      }
+
+
+
+      // 2020 Annotations
+      else if (dataset == "2020.csv") {
+        
+      }
+
+
+
+      // 2021 Annotations
+      else {
+        console.log("GAYYYYY")
+        
+      }
     
 
     })
