@@ -3,12 +3,15 @@
           
 <!-- Load d3.js -->
 <script src="https://d3js.org/d3.v6.js"></script>
+<!-- Load d3-annotation -->
+<script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
+
 
 <div class="text-center">
   <button onclick="update('2018.csv')">2018</button>
   <button onclick="update('2019.csv')">2019</button>
   <button onclick="update('2020.csv')">2020</button>
-  <button onclick="update('2020.csv')">2021</button>
+  <button onclick="update('2021.csv')">2021</button>
 
 </div>
 <div id="scatter_plot"></div>
@@ -37,7 +40,7 @@
   div.tooltip {
     position: absolute;
     text-align: center;
-    width: 150px;
+    width: 170px;
     height: 120px;
     padding: 2px;
     font: 12px sans-serif;
@@ -45,6 +48,10 @@
     border: 0px;
     border-radius: 8px;
     pointer-events: none;
+  }
+
+  .annotation {
+    fill: none;
   }
 }
 
@@ -204,11 +211,58 @@
 
       // 2018 Annotations
       if (dataset == "2018.csv") {
+        const annotation = [
+          {
+            note: {
+              title: "1 Europe",
+              label: "Consistently high happiness scores, strongly affected by high per capita effect on GDP"
+            },
+            type: d3.annotationCalloutRect,
+            subject: {
+              width: 270,
+              height: 180
+            },
+            x: 680,
+            y: 30,
+            dy: 200,
+            dx: 300
+          }
+        ]
+
+      const annotationSetting = d3.annotation()
+        .annotations(annotation)
+      svg.append("g")
+        .call(annotationSetting)
+
+
 
       }
 
       // 2019 Annotations
       else if (dataset == "2019.csv") {
+        const annotation = [
+          {
+            note: {
+              title: "2 Europe",
+              label: "Consistently high happiness scores, strongly affected by high per capita effect on GDP"
+            },
+            type: d3.annotationCalloutRect,
+            subject: {
+              width: 270,
+              height: 180
+            },
+            x: 680,
+            y: 30,
+            dy: 200,
+            dx: 300
+          }
+        ]
+
+      const annotationSetting = d3.annotation()
+        .annotations(annotation)
+      svg.append("g")
+        .call(annotationSetting)
+
         
       }
 
@@ -216,6 +270,32 @@
 
       // 2020 Annotations
       else if (dataset == "2020.csv") {
+        const annotation = [
+          {
+            note: {
+              title: "Costa Rica",
+              label: "Ranked among world leaders in happiness score, despite lower per capita GDP"
+            },
+            connector: {
+              end: "arrow ",        // Can be none, or arrow or dot
+              type: "line",      // ?? don't know what it does
+              lineType : "vertical",    // ?? don't know what it does
+              endScale: 100     // dot size
+            },
+            color: ["grey"],
+            x: 480,
+            y: 160,
+            dy: -40,
+            dx: -70
+          }
+        ]
+
+      const annotationSetting = d3.annotation()
+        .annotations(annotation)
+      svg.append("g")
+        .call(annotationSetting)
+        .transition()
+        .duration(1000)
         
       }
 
@@ -223,11 +303,38 @@
 
       // 2021 Annotations
       else {
-        console.log("GAYYYYY")
-        
-      }
-    
+        const annotation = [
+          {
+            note: {
+              title: "Western Europe",
+              label: "Consistently high happiness scores, strongly affected by high per capita effect on GDP"
+            },
+            type: d3.annotationCalloutRect,
+            subject: {
+              width: 270,
+              height: 180
+            },
+            x: 680,
+            y: 40,
+            dy: 200,
+            dx: 300,
+            
+          }
+        ]
 
+      const annotationSetting = d3.annotation()
+        .annotations(annotation)
+
+      svg.append("g")
+        .call(annotationSetting)
+        .transition()
+        .duration(1000)
+
+                    
+      
+      
+      
+      }
     })
   
   }
