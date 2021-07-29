@@ -10,10 +10,18 @@
   <script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
 
   <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="bootstrap.min.css">
 
   <title>Hello, world!</title>
 </head>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">CS 416: A Narrative Visualization</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+</nav>
 
 <body>
   <h1>Hello, world!</h1>
@@ -66,299 +74,284 @@
   .annotation {
     fill: none;
   }
+
+  .svg-container {
+    display: block;
+    margin: 0 auto;
+}
 }
 
 </style>
-
 <script>
-
-  const margin = {top: 50, right: 200, bottom: 300, left: 100},
-      width = 1500- margin.left - margin.right,
-      height = 950 - margin.top - margin.bottom;
-      
-  
-  var svg = d3.select("#scatter_plot")
-    .append("svg")
+    const margin = {top: 50, right: 200, bottom: 300, left: 100},
+        width = 1500- margin.left - margin.right,
+        height = 950 - margin.top - margin.bottom;
+    var svg = d3.select("#scatter_plot")
+      .append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-      .attr("transform", `translate(${margin.left},${margin.top})`);
-  
+      .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+    
 
-  var regions = ['Australia and New Zealand', 'Central and Eastern Europe', 'Eastern Asia', 'Latin America and Caribbean', 'Middle East and Northern Africa', 'North America', 'Southeastern Asia', 'Southern Asia', 'Sub-Saharan Africa', 'Western Europe']
-  var colorMap = d3.scaleOrdinal()
-      .domain(regions)
-      .range(d3.schemeCategory10);
-  var tooltip = d3.select("#scatter_plot")
-      .append("div")
-      .style("opacity", 0)
-      .attr("class", "tooltip")
+    var regions = ['Australia and New Zealand', 'Central and Eastern Europe', 'Eastern Asia', 'Latin America and Caribbean', 'Middle East and Northern Africa', 'North America', 'Southeastern Asia', 'Southern Asia', 'Sub-Saharan Africa', 'Western Europe']
+    var colorMap = d3.scaleOrdinal()
+        .domain(regions)
+        .range(d3.schemeCategory10);
+    var tooltip = d3.select("#scatter_plot")
+        .append("div")
+        .style("opacity", 0)
+        .attr("class", "tooltip");
+    
 
-   
-
-  // Outer function to read in csv files
-  function update(dataset) {
-    d3.csv(dataset).then( function(data) {
-      function make_x_gridlines() {		
-          return d3.axisBottom(x)
-              .ticks(10)
-      }
+    // Outer function to read in csv files
+    function update(dataset) {
+      d3.csv(dataset).then( function(data) {
+        function make_x_gridlines() {		
+            return d3.axisBottom(x)
+                .ticks(10)
+        }
 
 
-      function make_y_gridlines() {		
-          return d3.axisLeft(y)
-              .ticks(10)
-      }
-      
-      d3.selectAll("g > *").remove()
+        function make_y_gridlines() {		
+            return d3.axisLeft(y)
+                .ticks(10)
+        }
+        
+        d3.selectAll("g > *").remove()
 
-      // Add x and y axes
-      const x = d3.scaleLinear()
-        .domain([0, 2.3])
-        .range([ 0, width ]);
-      const y = d3.scaleLinear()
-        .domain([2, 9])
-        .range([ height, 0]);
-      // Add a scale for bubble size
-      const z = d3.scaleLinear()
-        .domain([0, 0.8])
-        .range([ 2, 40]);
-      
-      // add the X gridlines
-      svg.append("g")			
-        .attr("class", "grid")
-        .attr("transform", "translate(0," + height + ")")
-        .transition()
-        .duration(1000)
-        .call(make_x_gridlines()
-            .tickSize(-height)
-            .tickFormat("")
-        )
-
-    // add the Y gridlines
-      svg.append("g")			
-        .attr("class", "grid")
-        .transition()
-        .duration(1000)
-        .call(make_y_gridlines()
-            .tickSize(-width)
-            .tickFormat("")
-        )
-      
-      const mouseover = function(event, d) {
-        tooltip
-          .style("opacity", 1)
-      };
-
-      const mousemove = function(event, d) {
-        tooltip
-          .html(`Country: <b> ${d['Country']} </b>` + '<br/><br/>' + `Happiness Score: <b> ${d['Happiness Score']} </b> ` + '<br/>' + 
-          `Explained by GDP per Capita: ${d['GDP per Capita']}` + `<br/>` + `Explained by Freedom & Civil Liberties: ${d['Freedom']}`)
-          .style("left", (event.pageX) + "px")
-          .style("top", (event.pageY - 28) + "px");
-      };
-
-      const mouseleave = function(event,d) {
-        tooltip
+        // Add x and y axes
+        const x = d3.scaleLinear()
+          .domain([0, 2.3])
+          .range([ 0, width ]);
+        const y = d3.scaleLinear()
+          .domain([2, 9])
+          .range([ height, 0]);
+        // Add a scale for bubble size
+        const z = d3.scaleLinear()
+          .domain([0, 0.8])
+          .range([ 2, 40]);
+        
+        // add the X gridlines
+        svg.append("g")			
+          .attr("class", "grid")
+          .attr("transform", "translate(0," + height + ")")
           .transition()
-          .duration(100)
-          .style("opacity", 0)
-      };
+          .duration(1000)
+          .call(make_x_gridlines()
+              .tickSize(-height)
+              .tickFormat("")
+          )
 
-      // Add dots
-      var dots = svg.append('g')
-        .selectAll("dot")
-        .data(data)
-        .join("circle")
-        .attr("cx", d => x(d['GDP per Capita']))
-        .attr("cy", d => y(d['Happiness Score']))
+      // add the Y gridlines
+        svg.append("g")			
+          .attr("class", "grid")
+          .transition()
+          .duration(1000)
+          .call(make_y_gridlines()
+              .tickSize(-width)
+              .tickFormat("")
+          )
+        
+        const mouseover = function(event, d) {
+          tooltip
+            .style("opacity", 1)
+        };
+
+        const mousemove = function(event, d) {
+          tooltip
+            .html(`Country: <b> ${d['Country']} </b>` + '<br/><br/>' + `Happiness Score: <b> ${d['Happiness Score']} </b> ` + '<br/>' + 
+            `Explained by GDP per Capita: ${d['GDP per Capita']}` + `<br/>` + `Explained by Freedom & Civil Liberties: ${d['Freedom']}`)
+            .style("left", (event.pageX) + "px")
+            .style("top", (event.pageY - 28) + "px");
+        };
+
+        const mouseleave = function(event,d) {
+          tooltip
+            .transition()
+            .duration(100)
+            .style("opacity", 0)
+        };
+
+        // Add dots
+        var dots = svg.append('g')
+          .selectAll("dot")
+          .data(data)
+          .join("circle")
+          .attr("cx", d => x(d['GDP per Capita']))
+          .attr("cy", d => y(d['Happiness Score']))
+          .attr("r", 0)
+          .attr("class", "bubble")
+        
+        dots.transition()
+          .duration(1000)
+          .attr("r", d => z(d['Freedom']))
+          .style("fill", "#69b3a2")
+          .style("opacity", "0.7")
+          .attr("stroke", "black")
+          .style("fill", d => colorMap(d.Region))
+        
+        dots.on("mouseover", mouseover)
+          .on("mousemove", mousemove)
+          .on("mouseleave", mouseleave);
+              
+
+        svg.append("g")
+          .attr("transform", `translate(0, ${height})`)
+          .transition()
+          .duration(1000)
+          .call(d3.axisBottom(x));
+
+        svg.append("g")
+          .transition()
+          .duration(1000)
+          .call(d3.axisLeft(y));
+
+        svg.selectAll("legend_dots")
+        .data(regions)
+        .enter()
+        .append("circle")
+        .attr("cx", 1050)
+        .attr("cy", function(d,i){ return 410 + i*20}) 
         .attr("r", 0)
-        .attr("class", "bubble")
-      
-      dots.transition()
-        .duration(1000)
-        .attr("r", d => z(d['Freedom']))
-        .style("fill", "#69b3a2")
-        .style("opacity", "0.7")
-        .attr("stroke", "black")
-        .style("fill", d => colorMap(d.Region))
-      
-      dots.on("mouseover", mouseover)
-        .on("mousemove", mousemove)
-        .on("mouseleave", mouseleave);
-            
-
-      svg.append("g")
-        .attr("transform", `translate(0, ${height})`)
         .transition()
-        .duration(1000)
-        .call(d3.axisBottom(x));
+        .duration(1050)
+        .attr("r", 7)
+        .style("fill", d => colorMap(d))
 
-      svg.append("g")
-        .transition()
-        .duration(1000)
-        .call(d3.axisLeft(y));
+        svg.selectAll("legend_labels")
+        .data(regions)
+        .enter()
+        .append("text")
+        .attr("x", 1070)
+        .attr("y", function(d,i){ return 410 + i*20}) 
+        .style("fill", d => colorMap(d))
+        .text(d => d)
+        .attr("text-anchor", "left")
+        .style("alignment-baseline", "middle")
 
-      svg.selectAll("legend_dots")
-      .data(regions)
-      .enter()
-      .append("circle")
-      .attr("cx", 1050)
-      .attr("cy", function(d,i){ return 410 + i*20}) 
-      .attr("r", 0)
-      .transition()
-      .duration(1050)
-      .attr("r", 7)
-      .style("fill", d => colorMap(d))
-
-      svg.selectAll("legend_labels")
-      .data(regions)
-      .enter()
-      .append("text")
-      .attr("x", 1070)
-      .attr("y", function(d,i){ return 410 + i*20}) 
-      .style("fill", d => colorMap(d))
-      .text(d => d)
-      .attr("text-anchor", "left")
-      .style("alignment-baseline", "middle")
-
-      // 2018 Annotations
-      if (dataset == "2018.csv") {
-        const annotation = [
-        {
-            note: {
-              title: "United Arab Emirates",
-              label: "Happiness score disproportionally affected by high per capita GDP"
-            },
-            connector: {
-              end: "arrow ",        // Can be none, or arrow or dot
-              type: "line",      // ?? don't know what it does
-              lineType : "vertical",    // ?? don't know what it does
-              endScale: 100     // dot size
-            },
-            color: ["grey"],
-            x: 1080,
-            y: 180,
-            dy: -40,
-            dx: -70
-          }
-        ]
-
-      const annotationSetting = d3.annotation()
-        .annotations(annotation)
-      svg.append("g")
-        .call(annotationSetting)
-
-
-
-      }
-
-      // 2019 Annotations
-      else if (dataset == "2019.csv") {
-        const annotation = [
+        // 2018 Annotations
+        if (dataset == "2018.csv") {
+          const annotation = [
           {
-            note: {
-              title: "Sub-Saharan Africa",
-              label: "Consistently low happiness scores across region, with lower per capita GDP effect"
-            },
-            type: d3.annotationCalloutCircle,
-            subject: {
-              radius: 120
-            },
-            x: 120,
-            y: 420,
-            dy: -200,
-            dx: 0
-          }
-        ]
+              note: {
+                title: "United Arab Emirates",
+                label: "Happiness score disproportionally affected by high per capita GDP"
+              },
+              connector: {
+                end: "arrow ",        // Can be none, or arrow or dot
+                type: "line",      // ?? don't know what it does
+                lineType : "vertical",    // ?? don't know what it does
+                endScale: 100     // dot size
+              },
+              color: ["grey"],
+              x: 1080,
+              y: 180,
+              dy: -40,
+              dx: -70
+            }
+          ]
 
-      const annotationSetting = d3.annotation()
-        .annotations(annotation)
-      svg.append("g")
-        .call(annotationSetting)
+        const annotationSetting = d3.annotation()
+          .annotations(annotation)
+        svg.append("g")
+          .call(annotationSetting)
 
+
+
+        }
+
+        // 2019 Annotations
+        else if (dataset == "2019.csv") {
+          const annotation = [
+            {
+              note: {
+                title: "Sub-Saharan Africa",
+                label: "Consistently low happiness scores across region, with lower per capita GDP effect"
+              },
+              type: d3.annotationCalloutCircle,
+              subject: {
+                radius: 120
+              },
+              x: 120,
+              y: 420,
+              dy: -200,
+              dx: 0
+            }
+          ]
+
+        const annotationSetting = d3.annotation()
+          .annotations(annotation)
+        svg.append("g")
+          .call(annotationSetting)
+
+          
+        }
+
+
+
+        // 2020 Annotations
+        else if (dataset == "2020.csv") {
+          const annotation = [
+            {
+              note: {
+                title: "Costa Rica",
+                label: "Ranked among world leaders in happiness score, despite lower per capita GDP"
+              },
+              connector: {
+                end: "arrow ",        // Can be none, or arrow or dot
+                type: "line",      // ?? don't know what it does
+                lineType : "vertical",    // ?? don't know what it does
+                endScale: 100     // dot size
+              },
+              color: ["grey"],
+              x: 480,
+              y: 160,
+              dy: -40,
+              dx: -70
+            }
+          ]
+
+        const annotationSetting = d3.annotation()
+          .annotations(annotation)
+        svg.append("g")
+          .call(annotationSetting)
+          
+        }
+
+        // 2021 Annotations
+        else {
+          const annotation = [
+            {
+              note: {
+                title: "Western Europe",
+                label: "Consistently high happiness scores, strongly affected by high per capita effect on GDP"
+              },
+              type: d3.annotationCalloutRect,
+              subject: {
+                width: 270,
+                height: 180
+              },
+              x: 690,
+              y: 50,
+              dy: 100,
+              dx: 300,
+              
+            }
+          ]
+
+        const annotationSetting = d3.annotation()
+          .annotations(annotation)
+
+        svg.append("g")
+          .call(annotationSetting)
         
-      }
-
-
-
-      // 2020 Annotations
-      else if (dataset == "2020.csv") {
-        const annotation = [
-          {
-            note: {
-              title: "Costa Rica",
-              label: "Ranked among world leaders in happiness score, despite lower per capita GDP"
-            },
-            connector: {
-              end: "arrow ",        // Can be none, or arrow or dot
-              type: "line",      // ?? don't know what it does
-              lineType : "vertical",    // ?? don't know what it does
-              endScale: 100     // dot size
-            },
-            color: ["grey"],
-            x: 480,
-            y: 160,
-            dy: -40,
-            dx: -70
-          }
-        ]
-
-      const annotationSetting = d3.annotation()
-        .annotations(annotation)
-      svg.append("g")
-        .call(annotationSetting)
-        
-      }
-
-
-
-      // 2021 Annotations
-      else {
-        const annotation = [
-          {
-            note: {
-              title: "Western Europe",
-              label: "Consistently high happiness scores, strongly affected by high per capita effect on GDP"
-            },
-            type: d3.annotationCalloutRect,
-            subject: {
-              width: 270,
-              height: 180
-            },
-            x: 680,
-            y: 40,
-            dy: 200,
-            dx: 300,
-            
-          }
-        ]
-
-      const annotationSetting = d3.annotation()
-        .annotations(annotation)
-
-      svg.append("g")
-        .call(annotationSetting)
-
-                    
-      
-      
-      
-      }
-    })
-  
-  }
-
-  
-  update("2021.csv")
-
+        }
+      })
+    
+    }
+    update("2021.csv")
   </script>
-
-
-
-
-</script>
-
 <footer>
   Made by Vivek Datta
 </footer>
