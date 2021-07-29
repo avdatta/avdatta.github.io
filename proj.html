@@ -8,11 +8,10 @@
   <script src="https://d3js.org/d3.v6.js"></script>
   <!-- Load d3-annotation -->
   <script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
-
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="bootstrap.min.css">
 
-  <title>Hello, world!</title>
+  <title>Examining Happiness Scores</title>
 </head>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -24,21 +23,51 @@
 </nav>
 
 <body>
-  <h1>Hello, world!</h1>
+  <br>
+  <h1>Examining Happiness Scores</h1>
+  <br>
+  <figure class="text-center">
+    <blockquote class="blockquote">
+      <p class="mb-0">"Happiness is the meaning and the purpose of life, the whole aim and end of human existence."</p>
+    
+    </blockquote>
+    <figcaption class="blockquote-footer">
+      Aristotle,  <cite title="Source Title">Nicomachean Ethics</cite>
+    </figcaption>
+  </figure>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </body>          
 
-
-
-<div class="text-center">
-  <button onclick="update('2018.csv')">2018</button>
-  <button onclick="update('2019.csv')">2019</button>
-  <button onclick="update('2020.csv')">2020</button>
-  <button onclick="update('2021.csv')">2021</button>
-
+<div class="form-row text-center" role="group" aria-label="Basic radio toggle button group">
+  <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked="">
+  <label class="btn btn-outline-primary" for="btnradio1" onclick="update('2018.csv')">2018</label>
+  <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" checked="">
+  <label class="btn btn-outline-primary" for="btnradio2" onclick="update('2019.csv')">2019</label>
+  <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off" checked="">
+  <label class="btn btn-outline-primary" for="btnradio3" onclick="update('2020.csv')">2020</label>
+  <input type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off" checked="">
+  <label class="btn btn-outline-primary" for="btnradio4" onclick="update('2021.csv')">2021</label>
 </div>
+
 <div id="scatter_plot"></div>
 
 <style>
+  .btn-group btn {
+    margin: auto;
+  } 
   .bubble {
     stroke-width: 1px;
     stroke: white;
@@ -46,8 +75,8 @@
   .bubble:hover {
     stroke: black;
   }
-  .text-center {
-  text-align: center;
+  .btn-group {
+    text-align: center;
   }
 
   .grid line {
@@ -348,14 +377,11 @@
         
         }
       })
-    
+
     }
     update("2021.csv")
   </script>
-<footer>
-  Made by Vivek Datta
-</footer>
-  
+
 
 
 
