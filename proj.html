@@ -1,10 +1,24 @@
 <!DOCTYPE html>
-<meta charset="utf-8">
-          
-<!-- Load d3.js -->
-<script src="https://d3js.org/d3.v6.js"></script>
-<!-- Load d3-annotation -->
-<script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Load d3.js -->
+  <script src="https://d3js.org/d3.v6.js"></script>
+  <!-- Load d3-annotation -->
+  <script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <title>Hello, world!</title>
+</head>
+
+<body>
+  <h1>Hello, world!</h1>
+</body>          
+
 
 
 <div class="text-center">
@@ -40,10 +54,9 @@
   div.tooltip {
     position: absolute;
     text-align: center;
-    width: 170px;
-    height: 120px;
+    width: 200px;
+    height: 190px;
     padding: 2px;
-    font: 12px sans-serif;
     background: lightsteelblue;
     border: 0px;
     border-radius: 8px;
@@ -139,7 +152,7 @@
 
       const mousemove = function(event, d) {
         tooltip
-          .html(`Country: ${d['Country']}` + '<br/><br/>' + `Happiness Score: ${d['Happiness Score']}` + '<br/>' + 
+          .html(`Country: <b> ${d['Country']} </b>` + '<br/><br/>' + `Happiness Score: <b> ${d['Happiness Score']} </b> ` + '<br/>' + 
           `Explained by GDP per Capita: ${d['GDP per Capita']}` + `<br/>` + `Explained by Freedom & Civil Liberties: ${d['Freedom']}`)
           .style("left", (event.pageX) + "px")
           .style("top", (event.pageY - 28) + "px");
@@ -212,20 +225,22 @@
       // 2018 Annotations
       if (dataset == "2018.csv") {
         const annotation = [
-          {
+        {
             note: {
-              title: "1 Europe",
-              label: "Consistently high happiness scores, strongly affected by high per capita effect on GDP"
+              title: "United Arab Emirates",
+              label: "Happiness score disproportionally affected by high per capita GDP"
             },
-            type: d3.annotationCalloutRect,
-            subject: {
-              width: 270,
-              height: 180
+            connector: {
+              end: "arrow ",        // Can be none, or arrow or dot
+              type: "line",      // ?? don't know what it does
+              lineType : "vertical",    // ?? don't know what it does
+              endScale: 100     // dot size
             },
-            x: 680,
-            y: 30,
-            dy: 200,
-            dx: 300
+            color: ["grey"],
+            x: 1080,
+            y: 180,
+            dy: -40,
+            dx: -70
           }
         ]
 
@@ -243,18 +258,17 @@
         const annotation = [
           {
             note: {
-              title: "2 Europe",
-              label: "Consistently high happiness scores, strongly affected by high per capita effect on GDP"
+              title: "Sub-Saharan Africa",
+              label: "Consistently low happiness scores across region, with lower per capita GDP effect"
             },
-            type: d3.annotationCalloutRect,
+            type: d3.annotationCalloutCircle,
             subject: {
-              width: 270,
-              height: 180
+              radius: 120
             },
-            x: 680,
-            y: 30,
-            dy: 200,
-            dx: 300
+            x: 120,
+            y: 420,
+            dy: -200,
+            dx: 0
           }
         ]
 
@@ -294,8 +308,6 @@
         .annotations(annotation)
       svg.append("g")
         .call(annotationSetting)
-        .transition()
-        .duration(1000)
         
       }
 
@@ -327,8 +339,6 @@
 
       svg.append("g")
         .call(annotationSetting)
-        .transition()
-        .duration(1000)
 
                     
       
@@ -348,6 +358,10 @@
 
 
 </script>
+
+<footer>
+  Made by Vivek Datta
+</footer>
   
 
 
