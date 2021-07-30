@@ -24,7 +24,9 @@
 
 <body>
   <br>
-  <h1 class="text-center" >Examining Happiness Scores</h1>
+  <h1 class="text-center" >Towards an Understanding of Global Happiness </h1>
+  <h3 class="text-center" >Vivek Datta </h3>
+
   <br>
   <figure class="text-center">
     <blockquote class="blockquote">
@@ -36,14 +38,32 @@
     </figcaption>
   </figure>
   <br>
+  <p> Is money correlated with happiness across international cultures, borders, and lifestyles? The timeless adage of money not buying happiness may not be unfounded in its merits as valuable advice, and according to a famous 2010 study conducted by Nobel laureates Daniel Kahneman and Argus Deaton, people reported greater well-being as their annual salary rose (but only up to $70,000). 
+  However, this study could be argued as being outdated in present-day times, and was only limited to the United States, using the responses of 1,000 Americans as the sample. In this visualization, we seek to obtain a broader understanding of happiness internationally, with respect to money being a factor in creating emotional contentment and stability. 
+  </P>
   <br>
+  <p> The World Happiness Report, prepared by the United Nations Sustainable Development Solutions Network, operationalizes the concept of happiness using a happiness score, a value that is the average of a nationally-representative sample of respondents within a country when they are asked to rate their own lives on a scale from 0 to 10.  This score determined by six factors: (1) real GDP per capita, (2) social support, (3) healthy life expectancy, (4) freedom to make life choices, (5) generosity, and (6) perceptions of corruption.  In the report, a factor’s contribution to the happiness score, for a given country, is defined by the estimated effect in making happiness scores higher in that country compared to Dystopia, a fictional, benchmark country with the lowest average values for all 6 factors. 
+  </p>
   <br>
+  <p>We plot the contribution of real GDP per capita, or factor (1),  towards overall happiness for each country on the x-axis, and the country’s corresponding happiness score on the y-axis.  The radius of each circle is defined by the contribution of factor (4) towards overall happiness. In addition, the circles are colored by the corresponding region of the country they represent. One can toggle the buttons for 2018 up to 2021 to view the resulting bubble chart from that year. 
+  </p>
   <br>
+  <p> The message is direct from our visualization: it is clear that there is a very strong correlation between real GDP per capita and happiness, and that the notion of each person being relatively more well-off in terms of their surrounding 
+    economic productivity (and thus, likely earnings) is a strong, if not primary, factor in reported happiness across a nation. This trend is reliable and holds true internationally, with it particularly evident in Western Europe, 
+    where the vast majority the world’s self-reported happiest countries are located at. One can also look to many countries reporting lower factor values of real GDP per capita, and note that these nations are generally unable to reach happiness scores of 6 or above.  
+    Even if money ultimately may not buy happiness, it is clear that living in an economically-productive area is a strong predictor on overall self-reported life satisfaction and stability, 
+    and it may preclude economically-developing countries from having happier populations, on average.  
+  </p>
   <br>
-  <br>
-  <br>
-  <br>
-  <br>
+  <figure class="text-center">
+    <blockquote class="blockquote">
+      <p class="mb-0">"Having money's not everything, not having it is."</p>
+    
+    </blockquote>
+    <figcaption class="blockquote-footer">
+      Kanye West,  <cite title="Source Title">Good Life</cite>
+    </figcaption>
+  </figure>
   <br>
 
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -65,6 +85,10 @@
 <div id="scatter_plot"></div>
 
 <style>
+  p {
+    display: block;
+    margin-left: 30px;
+  }
   .btn-group btn {
     margin: auto;
   } 
@@ -107,8 +131,7 @@
   .svg-container {
     display: block;
     margin: 0 auto;
-}
-}
+  }
 
 </style>
 <script>
@@ -158,10 +181,29 @@
           .range([ height, 0]);
         // Add a scale for bubble size
         const z = d3.scaleLinear()
-          .domain([0, 0.8])
+          .domain([0, 1])
           .range([ 2, 40]);
         
-        // add the X gridlines
+        // add x axis label
+        svg.append("text")             
+          .attr("transform",
+                "translate(" + (width/2) + " ," + 
+                              (height + margin.top + 20) + ")")
+          .style("text-anchor", "middle")
+          .text("Contribution of GDP per Capita towards Happiness Score");
+        
+          // add y axis label
+        svg.append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("y", 20 - margin.left)
+          .attr("x",0 - (height / 2))
+          .attr("dy", "1em")
+          .style("text-anchor", "middle")
+          .text("Happiness Score");      
+
+
+        
+        // add the x gridlines
         svg.append("g")			
           .attr("class", "grid")
           .attr("transform", "translate(0," + height + ")")
@@ -172,7 +214,7 @@
               .tickFormat("")
           )
 
-      // add the Y gridlines
+      // add the y gridlines
         svg.append("g")			
           .attr("class", "grid")
           .transition()
@@ -265,7 +307,7 @@
           {
               note: {
                 title: "United Arab Emirates",
-                label: "Happiness score disproportionally affected by high per capita GDP"
+                label: "Happiness score disproportionally affected by high per capita GDP contribution"
               },
               connector: {
                 end: "arrow ",        // Can be none, or arrow or dot
@@ -325,7 +367,7 @@
             {
               note: {
                 title: "Costa Rica",
-                label: "Ranked among world leaders in happiness score, despite lower per capita GDP"
+                label: "Ranked among world leaders in happiness score, despite lower per capita GDP contribution"
               },
               connector: {
                 end: "arrow ",        // Can be none, or arrow or dot
@@ -354,7 +396,7 @@
             {
               note: {
                 title: "Western Europe",
-                label: "Consistently high happiness scores, strongly affected by high per capita effect on GDP"
+                label: "Consistently high happiness scores, strongly affected by high per capita GDP effect"
               },
               type: d3.annotationCalloutRect,
               subject: {
